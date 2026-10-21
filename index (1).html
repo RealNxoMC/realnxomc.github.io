@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NxoMC | Official Gaming Portal</title>
+
+  <!-- Minecraft-style pixel font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:Arial, sans-serif;
+      background:#050505;
+      color:#fff;
+      overflow-x:hidden;
+    }
+
+    /* Stars background */
+    .stars{
+      position:fixed;
+      inset:0;
+      background:url('https://www.transparenttextures.com/patterns/stardust.png');
+      opacity:.35;
+      z-index:-3;
+      animation:moveStars 60s linear infinite;
+    }
+
+    @keyframes moveStars{
+      from{transform:translateY(0);}
+      to{transform:translateY(-1000px);}
+    }
+
+    /* Orange glow background */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,140,0,.15), transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(255,140,0,.15), transparent 25%);
+      z-index:-2;
+      animation:bgGlow 8s infinite alternate;
+    }
+
+    @keyframes bgGlow{
+      from{filter:blur(30px);}
+      to{filter:blur(60px);}
+    }
+
+    /* Floating particles layer */
+    #particles-js{
+      position:fixed;
+      inset:0;
+      z-index:-1;
+    }
+
+    /* NAVBAR */
+    nav{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      padding:18px 8%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:rgba(0,0,0,.82);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(255,165,0,.25);
+      z-index:1000;
+    }
+
+    .logo{
+      font-family:'Press Start 2P', cursive;
+      font-size:18px;
+      color:orange;
+      text-shadow:0 0 14px orange;
+    }
+
+    nav ul{
+      display:flex;
+      list-style:none;
+      gap:24px;
+    }
+
+    nav a{
+      color:#fff;
+      text-decoration:none;
+      font-weight:700;
+      transition:.25s;
+    }
+
+    nav a:hover{
+      color:orange;
+      text-shadow:0 0 10px orange;
+    }
+
+    /* HERO */
+    .hero{
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:120px 20px 60px;
+    }
+
+    .hero img{
+      width:220px;
+      height:220px;
+      object-fit:cover;
+      border-radius:50%;
+      border:5px solid orange;
+      box-shadow:0 0 30px orange;
+    }
+
+    .hero h1{
+      font-family:'Press Start 2P', cursive;
+      font-size:clamp(36px,6vw,72px);
+      color:orange;
+      margin-top:22px;
+      line-height:1.15;
+      text-shadow:0 0 26px orange;
+    }
+
+    .hero p{
+      font-size:20px;
+      color:#ddd;
+      margin-top:14px;
+    }
+
+    .btn{
+      display:inline-block;
+      margin-top:26px;
+      padding:14px 34px;
+      border-radius:999px;
+      background:orange;
+      color:#111;
+      text-decoration:none;
+      font-weight:800;
+      transition:.25s ease;
+      box-shadow:0 0 0 rgba(255,165,0,0);
+    }
+
+    .btn:hover{
+      transform:translateY(-2px) scale(1.03);
+      box-shadow:0 0 22px rgba(255,165,0,.9);
+    }
+
+    /* Sections */
+    section{
+      padding:90px 10%;
+    }
+
+    .section-title{
+      font-family:'Press Start 2P', cursive;
+      font-size:clamp(22px,3vw,38px);
+      color:orange;
+      text-align:center;
+      margin-bottom:44px;
+      line-height:1.4;
+      text-shadow:0 0 12px orange;
+    }
+
+    .about{
+      max-width:900px;
+      margin:0 auto;
+      text-align:center;
+      line-height:1.9;
+      color:#d0d0d0;
+      font-size:18px;
+    }
+
+    /* Stats */
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:22px;
+    }
+
+    .card{
+      background:rgba(17,17,17,.85);
+      border:1px solid rgba(255,165,0,.45);
+      border-radius:18px;
+      padding:28px;
+      text-align:center;
+      backdrop-filter:blur(8px);
+      transition:.25s ease;
+    }
+
+    .card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 0 20px rgba(255,165,0,.45);
+      border-color:orange;
+    }
+
+    .card h2{
+      font-family:'Press Start 2P', cursive;
+      font-size:26px;
+      color:orange;
+      margin-bottom:10px;
+    }
+
+    .card p{
+      color:#ddd;
+    }
+
+    /* Live badge */
+    .live-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:1px;
+      color:#ff5252;
+      background:rgba(255,82,82,.12);
+      border:1px solid rgba(255,82,82,.45);
+      padding:3px 8px;
+      border-radius:999px;
+      margin-bottom:12px;
+      text-transform:uppercase;
+    }
+    .live-dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:#ff2d2d;
+      box-shadow:0 0 8px #ff2d2d;
+      animation:livePulse 1.2s ease-in-out infinite;
+    }
+    @keyframes livePulse{
+      0%,100%{opacity:1;transform:scale(1);}
+      50%{opacity:.35;transform:scale(.85);}
+    }
+
+    /* Road to 10K specific */
+    .progress-track{
+      width:100%;
+      height:18px;
+      background:#222;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:15px;
+      border:1px solid rgba(255,165,0,.25);
+    }
+    .progress-fill{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,orange,gold);
+      transition:width 1.2s cubic-bezier(.22,1,.36,1);
+      box-shadow:0 0 12px rgba(255,165,0,.6);
+    }
+
+    /* Games */
+    .games{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:24px;
+    }
+
+    .game{
+      background:rgba(17,17,17,.85);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:30px;
+      text-align:center;
+      transition:.25s ease;
+      backdrop-filter:blur(8px);
+    }
+
+    .game:hover{
+      transform:translateY(-6px) scale(1.01);
+      border-color:orange;
+      box-shadow:0 0 22px rgba(255,165,0,.45);
+    }
+
+    .game i{
+      font-size:52px;
+      color:orange;
+      margin-bottom:14px;
+      text-shadow:0 0 12px orange;
+    }
+
+    .game h3{
+      margin-bottom:10px;
+      font-size:22px;
+    }
+
+    .game p{
+      color:#cfcfcf;
+    }
+
+    /* Community */
+    .social{
+      text-align:center;
+    }
+
+    .social a{
+      display:inline-block;
+      margin:0 18px;
+      color:#fff;
+      text-decoration:none;
+      transition:.25s ease;
+    }
+
+    .social i{
+      font-size:64px;
+      text-shadow:0 0 14px rgba(255,165,0,.45);
+    }
+
+    .social span{
+      display:block;
+      margin-top:10px;
+      font-weight:700;
+      letter-spacing:.5px;
+    }
+
+    .social a:hover{
+      color:orange;
+      transform:translateY(-4px) scale(1.06);
+      text-shadow:0 0 18px orange;
+    }
+
+    /* Footer */
+    footer{
+      padding:26px 16px;
+      text-align:center;
+      color:#aaa;
+      border-top:1px solid rgba(255,165,0,.18);
+      background:rgba(0,0,0,.6);
+      backdrop-filter:blur(6px);
+    }
+
+    /* INTRO SCREEN */
+    #intro{
+      position:fixed;
+      inset:0;
+      background:#000;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      z-index:999999;
+      overflow:hidden;
+    }
+
+    .intro-content{
+      text-align:center;
+      padding:24px;
+    }
+
+    .sword{
+      font-size:110px;
+      filter:drop-shadow(0 0 18px orange);
+      animation:swordSpin 2s ease-in-out infinite;
+    }
+
+    @keyframes swordSpin{
+      0%{transform:rotate(-22deg);}
+      50%{transform:rotate(22deg);}
+      100%{transform:rotate(-22deg);}
+    }
+
+    .intro-content h1{
+      font-family:'Press Start 2P', cursive;
+      font-size:clamp(28px,5vw,58px);
+      color:orange;
+      margin-top:14px;
+      line-height:1.3;
+      text-shadow:0 0 24px orange;
+    }
+
+    .loading-container{
+      width:min(420px,92vw);
+      height:18px;
+      margin:28px auto 14px;
+      background:#111;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .loading-bar{
+      width:0%;
+      height:100%;
+      background:#ff2d2d;
+      box-shadow:0 0 15px #ff2d2d;
+      animation:loadBar 3s forwards;
+    }
+
+    @keyframes rgbMove{
+      0%{background-position:0% 50%;}
+      100%{background-position:100% 50%;}
+    }
+
+    @keyframes loadBar{
+      from{width:0%;}
+      to{width:100%;}
+    }
+
+    #loading-text{
+      color:#eee;
+      font-size:18px;
+      letter-spacing:.5px;
+    }
+
+    
+#typing{
+color:orange;
+margin-top:15px;
+font-weight:bold;
+text-shadow:0 0 10px orange;
+}
+
+.hero h1{
+animation:pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow{
+from{transform:scale(1);text-shadow:0 0 15px orange;}
+to{transform:scale(1.03);text-shadow:0 0 35px orange;}
+}
+
+.card:hover,.game:hover{
+box-shadow:0 0 30px orange;
+}
+
+/* Responsive */
+    @media (max-width: 720px){
+      nav{
+        padding:14px 5%;
+      }
+
+      .logo{
+        font-size:13px;
+      }
+
+      nav ul{
+        gap:12px;
+        font-size:14px;
+      }
+
+      .hero p{
+        font-size:16px;
+      }
+
+      .hero img{
+        width:170px;
+        height:170px;
+      }
+
+      .social i{
+        font-size:54px;
+      }
+    }
+  
+#backToTop{
+position:fixed;
+bottom:20px;
+right:20px;
+display:none;
+background:orange;
+color:#111;
+border:none;
+width:50px;
+height:50px;
+border-radius:50%;
+font-size:22px;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 0 15px orange;
+z-index:9999;
+}
+
+
+.glitch{
+  animation:glitch 0.12s infinite;
+  color:#ff5a5a !important;
+}
+@keyframes glitch{
+  0%{transform:translate(0)}
+  25%{transform:translate(-3px,2px)}
+  50%{transform:translate(3px,-2px)}
+  75%{transform:translate(-2px,-1px)}
+  100%{transform:translate(0)}
+}
+
+</style>
+</head>
+<body>
+
+  <div class="stars"></div>
+  <div id="particles-js"></div>
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div class="intro-content">
+      
+      <h1 id="introTitle">NxoMC</h1>
+
+      <div class="loading-container">
+        <div class="loading-bar"></div>
+      </div>
+
+      <p id="loading-text">CLUTCH OR LOSE<br><br>Loading Arena...</p>
+    </div>
+  </div>
+
+  <nav>
+    <div class="logo">NxoMC</div>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#games">Games</a></li>
+      <li><a href="#social">Community</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero" id="home">
+    <div>
+      
+      <h1>NxoMC</h1>
+      <p>⚔ Minecraft PvP • Clutch Or Lose ⚔</p><p id="typing"></p>
+
+      <a href="https://youtube.com/@RealNxoMC" target="_blank" class="btn">
+        WATCH ON YOUTUBE
+      </a>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2 class="section-title">ABOUT ME</h2>
+    <div class="about">
+      I am NxoMC, a Minecraft PvP player and gaming content creator.
+      I upload PvP battles, clutch moments, tutorials and exciting gameplay content.
+      Join the community and enjoy the journey.
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">GAMING STATS</h2>
+
+    <div class="stats">
+      <!-- PvP Wins (static target 500+) -->
+      <div class="card">
+        <h2 class="counter" data-target="500" data-suffix="+" style="text-align:center;width:100%;">0</h2>
+        <p>PvP Wins</p>
+      </div>
+
+      <!-- LIVE Subscribers -->
+      <div class="card">
+        <span class="live-badge"><span class="live-dot"></span> LIVE</span>
+        <h2 class="counter" id="subCounter" data-target="0">0</h2>
+        <p>Subscribers</p>
+      </div>
+
+      <!-- LIVE Videos -->
+      <div class="card">
+        <span class="live-badge"><span class="live-dot"></span> LIVE</span>
+        <h2 class="counter" id="videoCounter" data-target="0">0</h2>
+        <p>Videos Uploaded</p>
+      </div>
+
+      <!-- LIVE Total Views -->
+      <div class="card">
+        <span class="live-badge"><span class="live-dot"></span> LIVE</span>
+        <h2 class="counter" id="viewCounter" data-target="0">0</h2>
+        <p>Total Views</p>
+      </div>
+
+      <!-- Road to 10K (driven by live subscriber count) -->
+      <div class="card">
+        <p style="font-weight:bold;color:orange;margin-bottom:10px;">🎯 ROAD TO 10K</p>
+        <h2 class="counter" id="roadCounter" data-target="0" data-cap="10000">0</h2>
+        <div class="progress-track">
+          <div class="progress-fill" id="roadProgress"></div>
+        </div>
+        <p id="roadPercent" style="margin-top:10px;color:orange;font-weight:bold;">0% Complete</p>
+        <p id="roadRemaining" style="color:#bbb;margin-top:8px;">10,000 Remaining</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="games">
+    <h2 class="section-title">MY GAMES</h2>
+
+    <div class="games">
+      <div class="game">
+        <i class="fas fa-cube"></i>
+        <h3>Minecraft</h3>
+        <p>PvP • BedWars • Survival • Clutches</p>
+      </div>
+
+      <div class="game">
+        <i class="fas fa-gamepad"></i>
+        <h3>Roblox</h3>
+        <p>Competitive & Fun Gameplay</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="social">
+    <h2 class="section-title">JOIN THE COMMUNITY</h2>
+
+    <div class="social">
+      <a href="https://youtube.com/@RealNxoMC" target="_blank">
+        <i class="fab fa-youtube"></i>
+        <span>YouTube</span>
+      </a>
+
+      <a href="https://discord.gg/cHhh7fH7Y" target="_blank">
+        <i class="fab fa-discord"></i>
+        <span>Discord</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    © 2026 NxoMC | Official Gaming Website
+  </footer>
+
+  <!-- Particles.js (external script - inline code MUST be in a separate <script> tag below) -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+  <script>
+    /* =========================================================
+       NxoMC — YouTube Live Stats + Counter Animations
+       ---------------------------------------------------------
+       ⚙️  CONFIG: Put your YouTube Data API v3 key and Channel ID
+           below. If you only have the @handle, leave CHANNEL_ID
+           empty and set YT_HANDLE — the script will resolve it.
+       ========================================================= */
+    const YT_CONFIG = {
+      API_KEY:    "AIzaSyBR44ULPtCUwV6HTTyebQEvmVgXbZew0l8",   // YouTube Data API v3 key
+      CHANNEL_ID: "UCd_S3tS5R5ObK0cNlyEKNIg",                 // NxoMC channel ID
+      YT_HANDLE:  "@RealNxoMC",                                // used to auto-resolve channel ID
+      REFRESH_MS: 60000,                         // refresh every 60s
+      ROAD_GOAL:  10000,                         // Road to 10K goal
+      FALLBACK: { subs: 32, videos: 12, views: 1500 } // shown only if API call fails
+    };
+
+    /* ---------- 3-second NxoMC glitch intro ---------- */
+    const introTitle = document.getElementById('introTitle');
+    const loadingText = document.getElementById('loading-text');
+
+    setTimeout(() => {
+      introTitle.classList.add('glitch');
+      loadingText.innerHTML = 'ERROR DETECTED';
+    }, 1000);
+
+    setTimeout(() => {
+      introTitle.classList.remove('glitch');
+      loadingText.innerHTML = 'RECOVERY SUCCESSFUL';
+    }, 2000);
+
+    setTimeout(() => {
+      const intro = document.getElementById('intro');
+      intro.style.transition = 'opacity .8s ease';
+      intro.style.opacity = '0';
+      setTimeout(() => intro.style.display = 'none', 800);
+    }, 3000);
+
+    /* ---------- Floating particles ---------- */
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 70, density: { enable: true, value_area: 900 } },
+        color: { value: '#ff9900' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.45 },
+        size: { value: 3, random: true },
+        line_linked: { enable: false },
+        move: { enable: true, speed: 1.8, direction: 'none', out_mode: 'out' }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: {
+          onhover: { enable: true, mode: 'repulse' },
+          onclick: { enable: true, mode: 'push' },
+          resize: true
+        },
+        modes: {
+          repulse: { distance: 90 },
+          push: { particles_nb: 4 }
+        }
+      },
+      retina_detect: true
+    });
+
+    /* ---------- Counter Animation (re-runnable with new targets) ---------- */
+    function animateCounter(counter, target, opts = {}) {
+      const duration = opts.duration || 2500;       // ~2.5s cinematic
+      const suffix   = counter.dataset.suffix || '';
+      const cap      = counter.dataset.cap ? +counter.dataset.cap : null; // for Road to 10K
+
+      // Start from currently-shown number (so refreshes count up from previous value, not 0)
+      const startStr = (counter.textContent || '0').replace(/[^\d]/g, '');
+      const start = +startStr || 0;
+      const end = Math.max(0, Math.floor(target));
+
+      if (counter._raf) cancelAnimationFrame(counter._raf);
+
+      const t0 = performance.now();
+      const ease = (t) => 1 - Math.pow(1 - t, 3); // easeOutCubic
+
+      const step = (now) => {
+        const p = Math.min(1, (now - t0) / duration);
+        const v = Math.floor(start + (end - start) * ease(p));
+        const display = cap !== null ? Math.min(v, cap) : v;
+        counter.textContent = display.toLocaleString() + (p === 1 ? suffix : '');
+        if (p < 1) {
+          counter._raf = requestAnimationFrame(step);
+        } else {
+          counter.textContent = (cap !== null ? Math.min(end, cap) : end).toLocaleString() + suffix;
+        }
+      };
+      counter._raf = requestAnimationFrame(step);
+    }
+
+    /* ---------- Animate on scroll into view (first time only per element) ---------- */
+    const counters = document.querySelectorAll('.counter');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.dataset.observed) {
+          entry.target.dataset.observed = '1';
+          const tgt = +entry.target.dataset.target || 0;
+          animateCounter(entry.target, tgt);
+        }
+      });
+    }, { threshold: 0.4 });
+    counters.forEach(c => observer.observe(c));
+
+    /* ---------- Road to 10K progress UI updater ---------- */
+    function updateRoadTo10K(subs) {
+      const goal = YT_CONFIG.ROAD_GOAL;
+      const pct  = Math.min(100, (subs / goal) * 100);
+      const remaining = Math.max(0, goal - subs);
+
+      const fill = document.getElementById('roadProgress');
+      const pctEl = document.getElementById('roadPercent');
+      const remEl = document.getElementById('roadRemaining');
+
+      if (fill)  fill.style.width = pct.toFixed(2) + '%';
+      if (pctEl) pctEl.textContent = pct.toFixed(2) + '% Complete';
+      if (remEl) remEl.textContent = remaining.toLocaleString() + ' Remaining';
+    }
+
+    /* ---------- YouTube Data API v3 fetch ---------- */
+    async function resolveChannelId() {
+      // If a real channel ID is provided, use it.
+      if (YT_CONFIG.CHANNEL_ID && YT_CONFIG.CHANNEL_ID.startsWith('UC')) {
+        return YT_CONFIG.CHANNEL_ID;
+      }
+      // Otherwise resolve from handle.
+      const handle = (YT_CONFIG.YT_HANDLE || '').replace(/^@/, '');
+      if (!handle) return null;
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=@${encodeURIComponent(handle)}&key=${YT_CONFIG.API_KEY}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Handle lookup failed: ' + res.status);
+      const data = await res.json();
+      const id = data?.items?.[0]?.id;
+      if (id) YT_CONFIG.CHANNEL_ID = id; // cache
+      return id || null;
+    }
+
+    async function fetchYouTubeStats() {
+      if (!YT_CONFIG.API_KEY || YT_CONFIG.API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
+        throw new Error('API key not set');
+      }
+      const channelId = await resolveChannelId();
+      if (!channelId) throw new Error('Channel ID could not be resolved');
+
+      const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${YT_CONFIG.API_KEY}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Stats fetch failed: ' + res.status);
+      const data = await res.json();
+      const stats = data?.items?.[0]?.statistics;
+      if (!stats) throw new Error('No statistics returned');
+
+      return {
+        subs:   +stats.subscriberCount || 0,
+        videos: +stats.videoCount      || 0,
+        views:  +stats.viewCount       || 0
+      };
+    }
+
+    function applyStats(stats, animate = true) {
+      const map = [
+        { id: 'subCounter',   value: stats.subs   },
+        { id: 'videoCounter', value: stats.videos },
+        { id: 'viewCounter',  value: stats.views  },
+        { id: 'roadCounter',  value: stats.subs   } // road counter tracks subs, capped at 10K via data-cap
+      ];
+
+      map.forEach(({ id, value }) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.dataset.target = String(value);
+        // Mark as observed so the IntersectionObserver doesn't reset it to 0
+        el.dataset.observed = '1';
+        if (animate) animateCounter(el, value);
+        else el.textContent = value.toLocaleString();
+      });
+
+      updateRoadTo10K(stats.subs);
+    }
+
+    async function refreshLiveStats() {
+      try {
+        const stats = await fetchYouTubeStats();
+        applyStats(stats, true);
+      } catch (err) {
+        console.warn('[NxoMC] YouTube API error — using fallback values:', err.message);
+        // Only apply fallback the first time, so we don't keep overwriting good data with fallback
+        if (!window.__nxoFallbackApplied) {
+          window.__nxoFallbackApplied = true;
+          applyStats(YT_CONFIG.FALLBACK, true);
+        }
+      }
+    }
+
+    // Kick off first fetch + recurring refresh
+    refreshLiveStats();
+    setInterval(refreshLiveStats, YT_CONFIG.REFRESH_MS);
+
+    /* ---------- Hero typing effect ---------- */
+    const text = 'WELCOME TO NXOMC GAMING PORTAL';
+    let i = 0;
+    function typeText() {
+      const el = document.getElementById('typing');
+      if (el && i < text.length) {
+        el.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeText, 80);
+      }
+    }
+    typeText();
+
+    /* ---------- Back to top button ---------- */
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.style.display = window.scrollY > 300 ? 'block' : 'none';
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+
+  <button id="backToTop">↑</button>
+</body>
+</html>
